@@ -278,7 +278,7 @@ const Auth = () => {
   const isSignUp = view === 'signup';
 
   return (
-    <div className='w-full h-screen flex items-center justify-center bg-gray-50 p-4'>
+    <div className='w-full h-screen flex overflow-hidden items-center justify-center bg-gray-50 p-4'>
       <div className="w-full lg:w-[80%] rounded-[40px] h-[95vh] lg:h-[90vh] flex font-sans bg-white overflow-hidden shadow-2xl">
         {/* Left Column - Form */}
         <div className="w-full lg:w-1/2 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-8 relative">
