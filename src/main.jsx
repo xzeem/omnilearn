@@ -9,6 +9,7 @@ import TutorDashboard from './pages/TutorDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import CourseViewer from './pages/CourseViewer'
 import ResetPassword from './pages/ResetPassword'
+import NotFound from './pages/NotFound'
 
 import AuthWrapper from './AuthWrapper'
 import ProtectedRoute from './ProtectedRoute'
@@ -16,17 +17,16 @@ import { useAuthStore } from './lib/store'
 
 // A small component to automatically redirect logged-in users away from the Auth page
 const AuthRoute = ({ children }) => {
-  const { user, profile } = useAuthStore();
+  const { user, profile, isLoading } = useAuthStore();
   
-  // 1. Not logged in or profile not loaded yet? Show the Auth page.
+  if (isLoading) return null;
+
   if (!user || !profile) return children;
 
-  // 2. Logged in and have a profile? Bounce them to their rightful dashboard.
   if (profile.role === 'admin') return <Navigate to="/admin" replace />;
   if (profile.role === 'instructor') return <Navigate to="/tutor" replace />;
   if (profile.role === 'student') return <Navigate to="/dashboard" replace />;
   
-  // 3. Failsafe: unknown role.
   return children;
 };
 
@@ -41,6 +41,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/course" element={<ProtectedRoute allowedRoles={['student', 'instructor', 'admin']}><CourseViewer /></ProtectedRoute>} />
           <Route path="/tutor" element={<ProtectedRoute allowedRoles={['instructor', 'admin']}><TutorDashboard /></ProtectedRoute>} />
           <Route path="/admin" element={<ProtectedRoute allowedRoles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </AuthWrapper>
     </BrowserRouter>

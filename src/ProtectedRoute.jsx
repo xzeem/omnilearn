@@ -3,13 +3,23 @@ import { Navigate } from 'react-router-dom';
 import { useAuthStore } from './lib/store';
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
-  const { user, profile } = useAuthStore();
+  const { user, profile, isLoading } = useAuthStore();
+
+  if (isLoading) {
+    return (
+      <div className="h-screen w-full flex items-center justify-center bg-gray-50 text-indigo-600 font-sans">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 border-4 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
+          <p className="font-bold animate-pulse">Initializing Application...</p>
+        </div>
+      </div>
+    );
+  }
 
   // 1. Not logged in? Send to Auth screen.
   if (!user) return <Navigate to="/" replace />;
   
   // 2. Logged in, but profile data hasn't loaded yet? Send to Auth page to re-sync.
-  //    (Auth.jsx and AuthWrapper both set user+profile together, so this is a safety fallback.)
   if (!profile) return <Navigate to="/" replace />; 
 
   // 3. User is logged in and profile is loaded. Check their role.

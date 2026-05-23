@@ -3,14 +3,18 @@ import { supabase } from './lib/supabase';
 import { useAuthStore } from './lib/store';
 
 const AuthWrapper = ({ children }) => {
-  const { setUser, setProfile, clearAuth } = useAuthStore();
-  const [isInitializing, setIsInitializing] = useState(true);
+  const { setUser, setProfile, clearAuth, setIsLoading } = useAuthStore();
+  const [isInitializing, setLocalIsInitializing] = useState(true);
+
+  const finishInit = () => {
+    setLocalIsInitializing(false);
+    setIsLoading(false);
+  };
 
   useEffect(() => {
     let isMounted = true;
     let isInitialFired = false;
 
-    // Helper to safely sync profile and self-heal missing database rows (Ghost Users)
     const syncProfile = async (user) => {
       try {
         const { data, error } = await supabase
@@ -21,7 +25,7 @@ const AuthWrapper = ({ children }) => {
 
         if (error || !data) {
           console.warn("No profile found for authenticated user. Wiping ghost session...");
-          supabase.auth.signOut(); // Fire-and-forget, do NOT await to prevent infinite load hangs
+          supabase.auth.signOut();
           if (isMounted) clearAuth();
         } else {
           if (isMounted) {
@@ -31,11 +35,11 @@ const AuthWrapper = ({ children }) => {
         }
       } catch (err) {
         console.error("Error syncing profile:", err);
-        supabase.auth.signOut(); // Fire-and-forget, do NOT await
+        supabase.auth.signOut();
         if (isMounted) clearAuth();
       } finally {
         if (isMounted && !isInitialFired) {
-          setIsInitializing(false);
+          finishInit();
           isInitialFired = true;
         }
       }
@@ -50,24 +54,23 @@ const AuthWrapper = ({ children }) => {
         } else {
           if (isMounted) {
             clearAuth();
-            setIsInitializing(false);
+            finishInit();
             isInitialFired = true;
           }
         }
       } catch (e) {
         console.error("Initialization error:", e);
         if (isMounted) {
-          setIsInitializing(false);
+          finishInit();
           isInitialFired = true;
         }
       }
     };
 
-    // Failsafe Timeout: Force close loading screen after 2.5s if anything hangs (WSL drops, slow DB, etc)
     const failsafeTimeout = setTimeout(() => {
       if (isMounted && !isInitialFired) {
         console.warn("Failsafe: Auth initialization timed out. Forcing load.");
-        setIsInitializing(false);
+        finishInit();
         isInitialFired = true;
       }
     }, 2500);
@@ -79,13 +82,11 @@ const AuthWrapper = ({ children }) => {
         if (isMounted) {
           clearAuth();
           if (!isInitialFired) {
-            setIsInitializing(false);
+            finishInit();
             isInitialFired = true;
           }
         }
       } else if (event === 'TOKEN_REFRESHED' && session?.user) {
-        // Only re-sync profile on background token refreshes.
-        // SIGNED_IN is handled directly by Auth.jsx to avoid lock contention.
         await syncProfile(session.user);
       }
     });
@@ -95,7 +96,7 @@ const AuthWrapper = ({ children }) => {
       subscription.unsubscribe();
       clearTimeout(failsafeTimeout);
     };
-  }, [setUser, setProfile, clearAuth]);
+  }, [setUser, setProfile, clearAuth, setIsLoading]);
 
   if (isInitializing) {
     return (
