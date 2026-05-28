@@ -3,7 +3,72 @@ import { BookOpen, Mail, Lock, ArrowRight, Loader2, ArrowLeft, CheckCircle2 } fr
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
+// Prefer WebP for ~40-60% smaller file — convert hero.png → hero.webp (see README or use squoosh.app)
+// Once converted, switch this import to '../assets/hero.webp'
 import heroImage from '../assets/hero.png';
+
+// ── Right Panel (shared) ──────────────────────────────────────────────────────
+const RightPanel = () => (
+  <div className="hidden lg:block lg:w-1/2 h-full p-4 pl-0">
+    <div className="w-full h-full relative rounded-3xl overflow-hidden bg-indigo-50 shadow-inner">
+      <div className="absolute inset-0 bg-indigo-600/5 mix-blend-overlay z-10" />
+      <img src={heroImage} alt="Dashboard UI" className="w-full h-full object-cover object-center" />
+    </div>
+  </div>
+);
+
+// ── Logo ──────────────────────────────────────────────────────────────────────
+const Logo = () => (
+  <div className="flex items-center gap-2 mb-10">
+    <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-600/20">
+      <BookOpen size={24} />
+    </div>
+    <span className="font-heading font-bold text-2xl tracking-tight text-gray-900">omniLearn.</span>
+  </div>
+);
+
+// ── Error Banner ──────────────────────────────────────────────────────────────
+const ErrorBanner = ({ errorMsg }) =>
+  errorMsg ? (
+    <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-sm font-semibold">
+      {errorMsg}
+    </div>
+  ) : null;
+
+// ── Input Field ───────────────────────────────────────────────────────────────
+const Field = ({ label, type = 'text', value, onChange, placeholder, required = true, icon: Icon }) => (
+  <div className="space-y-1.5">
+    <label className="text-sm font-semibold text-gray-900">{label}</label>
+    <div className="relative">
+      {Icon && (
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
+          <Icon size={18} />
+        </div>
+      )}
+      <input
+        type={type}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        placeholder={placeholder}
+        className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all bg-white"
+      />
+    </div>
+  </div>
+);
+
+// ── SubmitBtn ─────────────────────────────────────────────────────────────────
+const SubmitBtn = ({ label, loading }) => (
+  <button
+    type="submit"
+    disabled={loading}
+    className="w-full py-3.5 mt-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group"
+  >
+    {loading ? <Loader2 size={18} className="animate-spin" /> : (
+      <>{label}<ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
+    )}
+  </button>
+);
 
 // View states: 'signin' | 'signup' | 'forgot' | 'forgot_sent' | 'email_confirm'
 const Auth = () => {
@@ -97,69 +162,6 @@ const Auth = () => {
       setLoading(false);
     }
   };
-
-  // ── Right Panel (shared) ──────────────────────────────────────────────────────
-  const RightPanel = () => (
-    <div className="hidden lg:block lg:w-1/2 h-full p-4 pl-0">
-      <div className="w-full h-full relative rounded-3xl overflow-hidden bg-indigo-50 shadow-inner">
-        <div className="absolute inset-0 bg-indigo-600/5 mix-blend-overlay z-10" />
-        <img src={heroImage} alt="Dashboard UI" className="w-full h-full object-cover object-center" />
-      </div>
-    </div>
-  );
-
-  // ── Logo ──────────────────────────────────────────────────────────────────────
-  const Logo = () => (
-    <div className="flex items-center gap-2 mb-10">
-      <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-600/20">
-        <BookOpen size={24} />
-      </div>
-      <span className="font-heading font-bold text-2xl tracking-tight text-gray-900">omniLearn.</span>
-    </div>
-  );
-
-  // ── Error Banner ──────────────────────────────────────────────────────────────
-  const ErrorBanner = () =>
-    errorMsg ? (
-      <div className="mb-6 p-4 bg-rose-50 border border-rose-100 rounded-xl text-rose-600 text-sm font-semibold">
-        {errorMsg}
-      </div>
-    ) : null;
-
-  // ── Input Field ───────────────────────────────────────────────────────────────
-  const Field = ({ label, type = 'text', value, onChange, placeholder, required = true, icon: Icon }) => (
-    <div className="space-y-1.5">
-      <label className="text-sm font-semibold text-gray-900">{label}</label>
-      <div className="relative">
-        {Icon && (
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-gray-400">
-            <Icon size={18} />
-          </div>
-        )}
-        <input
-          type={type}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          required={required}
-          placeholder={placeholder}
-          className="w-full pl-4 pr-10 py-3 rounded-xl border border-gray-200 focus:border-indigo-600 focus:ring-2 focus:ring-indigo-600/20 outline-none transition-all bg-white"
-        />
-      </div>
-    </div>
-  );
-
-  // ── SubmitBtn ─────────────────────────────────────────────────────────────────
-  const SubmitBtn = ({ label }) => (
-    <button
-      type="submit"
-      disabled={loading}
-      className="w-full py-3.5 mt-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-400 text-white font-bold rounded-xl shadow-lg shadow-indigo-600/20 transition-all flex items-center justify-center gap-2 group"
-    >
-      {loading ? <Loader2 size={18} className="animate-spin" /> : (
-        <>{label}<ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" /></>
-      )}
-    </button>
-  );
 
   // ════════════════════════════════════════════════════════════════════════════
   //  VIEW: Email Confirmation Screen (after sign-up)
