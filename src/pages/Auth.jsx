@@ -3,16 +3,22 @@ import { BookOpen, Mail, Lock, ArrowRight, Loader2, ArrowLeft, CheckCircle2 } fr
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
-// Prefer WebP for ~40-60% smaller file — convert hero.png → hero.webp (see README or use squoosh.app)
-// Once converted, switch this import to '../assets/hero.webp'
-import heroImage from '../assets/hero.png';
+import heroImage from '../assets/hero.webp';
 
 // ── Right Panel (shared) ──────────────────────────────────────────────────────
 const RightPanel = () => (
-  <div className="hidden lg:block lg:w-1/2 h-full p-4 pl-0">
+  <div className="hidden lg:block lg:w-1/2 self-stretch p-4 pl-0">
     <div className="w-full h-full relative rounded-3xl overflow-hidden bg-indigo-50 shadow-inner">
       <div className="absolute inset-0 bg-indigo-600/5 mix-blend-overlay z-10" />
-      <img src={heroImage} alt="Dashboard UI" className="w-full h-full object-cover object-center" />
+      <img
+          src={heroImage}
+          alt="Dashboard UI"
+          className="w-full h-full object-cover object-center"
+          fetchpriority="high"
+          decoding="async"
+          width={1024}
+          height={1024}
+        />
     </div>
   </div>
 );
@@ -169,9 +175,9 @@ const Auth = () => {
   if (view === 'email_confirm') {
     return (
       <div className="w-full min-h-[100dvh] flex items-center justify-center bg-gray-50 p-4">
-        <div className="w-full lg:w-[80%] rounded-[40px] min-h-[90vh] lg:h-[90vh] flex font-sans bg-white overflow-hidden shadow-2xl">
-          <div className="w-full lg:w-1/2 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-8">
-            <div className="max-w-md w-full mx-auto text-center">
+        <div className="w-full lg:w-[80%] rounded-[40px] flex font-sans bg-white overflow-hidden shadow-2xl">
+          <div className="w-full lg:w-1/2 flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-12">
+            <div className="max-w-md w-full mx-auto my-auto text-center">
               <Logo />
               <div className="w-20 h-20 bg-emerald-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <CheckCircle2 size={40} className="text-emerald-500" />
@@ -205,9 +211,9 @@ const Auth = () => {
   if (view === 'forgot_sent') {
     return (
       <div className="w-full min-h-[100dvh] flex items-center justify-center bg-gray-50 p-4">
-        <div className="w-full lg:w-[80%] rounded-[40px] min-h-[90vh] lg:h-[90vh] flex font-sans bg-white overflow-hidden shadow-2xl">
-          <div className="w-full lg:w-1/2 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-8">
-            <div className="max-w-md w-full mx-auto text-center">
+        <div className="w-full lg:w-[80%] rounded-[40px] flex font-sans bg-white overflow-hidden shadow-2xl">
+          <div className="w-full lg:w-1/2 flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-12">
+            <div className="max-w-md w-full mx-auto my-auto text-center">
               <Logo />
               <div className="w-20 h-20 bg-indigo-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Mail size={36} className="text-indigo-500" />
@@ -239,9 +245,9 @@ const Auth = () => {
   if (view === 'forgot') {
     return (
       <div className="w-full min-h-[100dvh] flex items-center justify-center bg-gray-50 p-4">
-        <div className="w-full lg:w-[80%] rounded-[40px] min-h-[90vh] lg:h-[90vh] flex font-sans bg-white overflow-hidden shadow-2xl">
-          <div className="w-full lg:w-1/2 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-8">
-            <div className="max-w-md w-full mx-auto">
+        <div className="w-full lg:w-[80%] rounded-[40px] flex font-sans bg-white overflow-hidden shadow-2xl">
+          <div className="w-full lg:w-1/2 flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-12">
+            <div className="max-w-md w-full mx-auto my-auto">
               <Logo />
               <button
                 type="button"
@@ -281,10 +287,10 @@ const Auth = () => {
 
   return (
     <div className='w-full min-h-[100dvh] flex items-center justify-center bg-gray-50 p-4'>
-      <div className="w-full lg:w-[80%] rounded-[40px] min-h-[90vh] lg:h-[90vh] flex font-sans bg-white overflow-hidden shadow-2xl">
+      <div className="w-full lg:w-[80%] rounded-[40px] flex font-sans bg-white overflow-hidden shadow-2xl">
         {/* Left Column - Form */}
-        <div className="w-full lg:w-1/2 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-8 relative">
-          <div className="max-w-md w-full mx-auto">
+        <div className="w-full lg:w-1/2 flex-1 flex flex-col justify-center px-6 sm:px-12 lg:px-24 overflow-y-auto py-12 relative">
+          <div className="max-w-md w-full mx-auto my-auto">
             <Logo />
             <h1 className="font-heading font-black text-3xl sm:text-4xl text-gray-900 mb-2">
               {isSignUp ? 'Create an account' : 'Welcome back'}
