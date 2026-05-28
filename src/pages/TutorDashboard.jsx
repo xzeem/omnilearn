@@ -1205,7 +1205,7 @@ const TutorDashboard = () => {
           <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-300 animate-in fade-in">
             <div className="bg-white rounded-3xl max-w-lg w-full border border-gray-100 shadow-2xl p-6 sm:p-8 relative overflow-hidden animate-in zoom-in-95 duration-200">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="font-heading font-bold text-2xl text-gray-900">
+                <h2 className="font-heading font-bold text-xl sm:text-2xl text-gray-900">
                   {editingCourse ? 'Edit Course Details' : 'Create New Course'}
                 </h2>
                 <button 
@@ -1234,7 +1234,7 @@ const TutorDashboard = () => {
                     type="text" 
                     value={courseForm.title} 
                     onChange={(e) => setCourseForm({ ...courseForm, title: e.target.value })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                     placeholder="e.g. Advanced JavaScript & Patterns"
                     required
                   />
@@ -1255,7 +1255,7 @@ const TutorDashboard = () => {
                           setCourseForm({ ...courseForm, category: val });
                         }
                       }}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-semibold text-gray-900 animate-none"
+                      className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-semibold text-gray-900 text-sm sm:text-base animate-none"
                       required
                     >
                       <option value="" disabled>Select Category</option>
@@ -1286,7 +1286,7 @@ const TutorDashboard = () => {
                     <select 
                       value={courseForm.level} 
                       onChange={(e) => setCourseForm({ ...courseForm, level: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-semibold text-gray-900"
+                      className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-semibold text-gray-900 text-sm sm:text-base"
                     >
                       <option value="Beginner">Beginner</option>
                       <option value="Intermediate">Intermediate</option>
@@ -1377,7 +1377,7 @@ const TutorDashboard = () => {
           <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-300 animate-in fade-in">
             <div className="bg-white rounded-3xl max-w-lg w-full border border-gray-100 shadow-2xl p-6 sm:p-8 relative overflow-hidden animate-in zoom-in-95 duration-200">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="font-heading font-bold text-2xl text-gray-900">
+                <h2 className="font-heading font-bold text-xl sm:text-2xl text-gray-900">
                   {editingLesson ? 'Edit Lesson Curriculum' : 'Add New Lesson'}
                 </h2>
                 <button 
@@ -1396,7 +1396,7 @@ const TutorDashboard = () => {
                       type="text" 
                       value={lessonForm.title} 
                       onChange={(e) => setLessonForm({ ...lessonForm, title: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                      className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                       placeholder="e.g. Setting Up Your Environment"
                       required
                     />
@@ -1408,7 +1408,7 @@ const TutorDashboard = () => {
                       min="1"
                       value={lessonForm.order} 
                       onChange={(e) => setLessonForm({ ...lessonForm, order: e.target.value })}
-                      className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-bold text-gray-900"
+                      className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-bold text-gray-900 text-sm sm:text-base"
                       required
                     />
                   </div>
@@ -1420,7 +1420,7 @@ const TutorDashboard = () => {
                     type="text" 
                     value={lessonForm.video_url} 
                     onChange={(e) => setLessonForm({ ...lessonForm, video_url: e.target.value })}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm"
+                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-[13px] sm:text-sm"
                     placeholder="https://example.com/lesson-video.mp4"
                   />
                 </div>
@@ -1431,7 +1431,7 @@ const TutorDashboard = () => {
                     value={lessonForm.content} 
                     onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
                     rows={5}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm leading-relaxed"
+                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-[13px] sm:text-sm leading-relaxed"
                     placeholder="Write detailed lesson texts or resources here..."
                     required
                   />
@@ -1465,7 +1465,7 @@ const TutorDashboard = () => {
           <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 transition-all duration-300">
             <div className="bg-white rounded-3xl max-w-md w-full border border-gray-100 shadow-2xl p-6 sm:p-8 relative overflow-hidden animate-in fade-in zoom-in-95 duration-200">
               <div className="flex justify-between items-center mb-6">
-                <h2 className="font-heading font-bold text-2xl text-gray-900">Profile Settings</h2>
+                <h2 className="font-heading font-bold text-xl sm:text-2xl text-gray-900">Profile Settings</h2>
                 <button 
                   className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
                   onClick={() => setIsSettingsOpen(false)}
@@ -1529,7 +1529,7 @@ const TutorDashboard = () => {
                     type="text" 
                     value={editFullName} 
                     onChange={(e) => setEditFullName(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                     placeholder="Enter full name"
                     required
                   />
@@ -1541,7 +1541,7 @@ const TutorDashboard = () => {
                     type="text" 
                     value={editUsername} 
                     onChange={(e) => setEditUsername(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                     placeholder="Enter username"
                   />
                 </div>
@@ -1552,7 +1552,7 @@ const TutorDashboard = () => {
                     type="text" 
                     value={editAvatarSeed} 
                     onChange={(e) => setEditAvatarSeed(e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                     placeholder="Enter custom nickname for avatar"
                   />
                 </div>

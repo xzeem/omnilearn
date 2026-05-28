@@ -602,7 +602,7 @@ const StudentDashboard = () => {
         <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 transition-all duration-300">
           <div className="bg-white rounded-3xl max-w-md w-full border border-gray-100 shadow-2xl p-6 sm:p-8 relative max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
             <div className="flex justify-between items-center mb-6">
-              <h2 className="font-heading font-bold text-2xl text-gray-900">Profile Settings</h2>
+              <h2 className="font-heading font-bold text-xl sm:text-2xl text-gray-900">Profile Settings</h2>
               <button
                 className="text-gray-400 hover:text-gray-600 p-1 hover:bg-gray-100 rounded-lg transition-colors"
                 onClick={() => setIsSettingsOpen(false)}
@@ -669,7 +669,7 @@ const StudentDashboard = () => {
                   type="text"
                   value={editFullName}
                   onChange={(e) => setEditFullName(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                   placeholder="Enter full name"
                   required
                 />
@@ -681,7 +681,7 @@ const StudentDashboard = () => {
                   type="text"
                   value={editUsername}
                   onChange={(e) => setEditUsername(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                   placeholder="Enter username"
                 />
               </div>
@@ -694,7 +694,7 @@ const StudentDashboard = () => {
                   type="text"
                   value={editAvatarSeed}
                   onChange={(e) => setEditAvatarSeed(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900"
+                  className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-sm sm:text-base"
                   placeholder="Enter custom nickname for avatar"
                 />
               </div>
@@ -730,7 +730,7 @@ const StudentDashboard = () => {
                   type="button"
                   onClick={handleSwitchToTutor}
                   disabled={isSwitchingRole}
-                  className="w-full py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold rounded-xl transition-all border border-indigo-100 hover:border-indigo-200 flex items-center justify-center gap-2 text-sm disabled:opacity-50 cursor-pointer"
+                  className="w-full py-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-bold rounded-xl transition-all border border-indigo-100 hover:border-indigo-200 flex items-center justify-center gap-2 text-xs sm:text-sm disabled:opacity-50 cursor-pointer"
                 >
                   <LayoutDashboard size={16} /> Switch to Tutor Profile
                 </button>
