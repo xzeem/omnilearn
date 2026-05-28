@@ -136,12 +136,18 @@ const Auth = () => {
     setLoading(true);
     setErrorMsg('');
     try {
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: { data: { full_name: fullName } },
       });
       if (error) throw error;
+
+      // Supabase returns a user with empty identities when the email is already registered
+      if (data?.user?.identities?.length === 0) {
+        throw new Error('An account with this email already exists. Please sign in instead.');
+      }
+
       // Show email confirmation screen — do NOT auto-login
       setView('email_confirm');
     } catch (err) {
@@ -260,7 +266,7 @@ const Auth = () => {
               <p className="text-gray-500 font-medium mb-8 text-sm">
                 Enter the email address linked to your account and we'll send you a reset link.
               </p>
-              <ErrorBanner />
+              <ErrorBanner errorMsg={errorMsg} />
               <form className="space-y-4" onSubmit={handleForgotPassword}>
                 <Field
                   label="Email address"
@@ -299,7 +305,7 @@ const Auth = () => {
               {isSignUp ? 'Start your learning journey today.' : 'Please enter your details to sign in.'}
             </p>
 
-            <ErrorBanner />
+            <ErrorBanner errorMsg={errorMsg} />
 
             <form className="space-y-4" onSubmit={isSignUp ? handleSignUp : handleSignIn}>
               {isSignUp && (
