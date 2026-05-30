@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ArrowLeft, PlayCircle, CheckCircle2, Circle, ChevronRight, ChevronDown, Lock, Award, Menu, X } from 'lucide-react';
+import { ArrowLeft, PlayCircle, CheckCircle2, Circle, ChevronLeft, ChevronRight, ChevronDown, Play, Menu, X } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
@@ -8,6 +8,7 @@ const CourseViewer = () => {
   const navigate = useNavigate();
   const { profile } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile curriculum
+  const [isLessonIndexOpen, setIsLessonIndexOpen] = useState(false); // Inline lesson index
 
   const [course, setCourse] = useState(null);
   const [lessons, setLessons] = useState([]);
@@ -143,6 +144,19 @@ const CourseViewer = () => {
     ? Math.round((completedLessons.length / lessons.length) * 100)
     : 0;
 
+  // Derived navigation helpers
+  const activeIndex = lessons.findIndex((l) => l.id === activeLesson?.id);
+  const prevLesson = activeIndex > 0 ? lessons[activeIndex - 1] : null;
+  const nextLesson = activeIndex < lessons.length - 1 ? lessons[activeIndex + 1] : null;
+
+  const goToLesson = (lesson) => {
+    if (!lesson) return;
+    setActiveLesson(lesson);
+    setIsSidebarOpen(false);
+    // Scroll video back into view smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className="min-h-screen bg-neutral-50 font-sans flex flex-col">
       {/* Top Navigation */}
@@ -206,21 +220,119 @@ const CourseViewer = () => {
               </div>
 
               {/* Below Video Controls */}
-              <div className="bg-white border-b border-gray-100 p-4 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-                <h2 className="font-heading font-bold text-xl text-gray-900">{activeLesson.title}</h2>
-                <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="bg-white border-b border-gray-100 px-4 lg:px-8 py-3 flex flex-wrap md:flex-nowrap items-center gap-3">
+                {/* Prev Button */}
+                <button
+                  onClick={() => goToLesson(prevLesson)}
+                  disabled={!prevLesson}
+                  title={prevLesson ? `Previous: ${prevLesson.title}` : 'No previous lesson'}
+                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                    prevLesson
+                      ? 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                  }`}
+                >
+                  <ChevronLeft size={16} />
+                  <span className="hidden sm:inline">Previous</span>
+                </button>
+
+                {/* Center: title + complete */}
+                <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-2">
+                  <h2 className="font-heading font-bold text-base lg:text-lg text-gray-900 line-clamp-1 flex-1">
+                    <span className="text-indigo-400 font-semibold mr-1.5 text-sm">{activeIndex + 1}/{lessons.length}</span>
+                    {activeLesson.title}
+                  </h2>
                   <button
                     onClick={() => handleToggleComplete(activeLesson.id)}
-                    className={`flex-1 sm:flex-none px-6 py-2.5 font-bold rounded-xl transition-colors shadow-md flex items-center justify-center gap-2 ${
+                    className={`shrink-0 px-5 py-2 font-bold rounded-xl transition-colors text-sm flex items-center gap-2 ${
                       activeLessonCompleted
-                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100 shadow-none'
-                        : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-indigo-600/20'
+                        ? 'bg-emerald-50 text-emerald-600 border border-emerald-200 hover:bg-emerald-100'
+                        : 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-600/20'
                     }`}
                   >
-                    <CheckCircle2 size={18} />{' '}
+                    <CheckCircle2 size={16} />
                     {activeLessonCompleted ? 'Completed' : 'Mark Complete'}
                   </button>
                 </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => goToLesson(nextLesson)}
+                  disabled={!nextLesson}
+                  title={nextLesson ? `Next: ${nextLesson.title}` : 'No next lesson'}
+                  className={`shrink-0 flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-bold text-sm transition-all ${
+                    nextLesson
+                      ? 'bg-indigo-600 text-white hover:bg-indigo-700 shadow-md shadow-indigo-600/20'
+                      : 'bg-gray-50 text-gray-300 cursor-not-allowed'
+                  }`}
+                >
+                  <span className="hidden sm:inline">Next</span>
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+
+              {/* Lesson Index Panel */}
+              <div className="bg-white border-b border-gray-100">
+                <button
+                  onClick={() => setIsLessonIndexOpen((v) => !v)}
+                  className="w-full flex items-center justify-between px-4 lg:px-8 py-3 hover:bg-gray-50 transition-colors group"
+                >
+                  <div className="flex items-center gap-2">
+                    <Play size={14} className="text-indigo-500 fill-indigo-500" />
+                    <span className="font-bold text-sm text-gray-800">Course Lessons</span>
+                    <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                      {lessons.length} lessons
+                    </span>
+                  </div>
+                  <ChevronDown
+                    size={18}
+                    className={`text-gray-400 transition-transform duration-300 ${
+                      isLessonIndexOpen ? 'rotate-180' : ''
+                    }`}
+                  />
+                </button>
+
+                {isLessonIndexOpen && (
+                  <div className="border-t border-gray-50 max-h-72 overflow-y-auto">
+                    {lessons.map((lesson, idx) => {
+                      const isCurrent = lesson.id === activeLesson?.id;
+                      const isDone = completedLessons.includes(lesson.id);
+                      return (
+                        <button
+                          key={lesson.id}
+                          onClick={() => goToLesson(lesson)}
+                          className={`w-full flex items-center gap-3 px-4 lg:px-8 py-3 text-left transition-colors border-b border-gray-50 last:border-0 ${
+                            isCurrent
+                              ? 'bg-indigo-50 border-l-4 border-l-indigo-600'
+                              : 'hover:bg-gray-50 border-l-4 border-l-transparent'
+                          }`}
+                        >
+                          <div className="shrink-0">
+                            {isDone ? (
+                              <CheckCircle2 size={16} className="text-emerald-500" />
+                            ) : isCurrent ? (
+                              <Play size={16} className="text-indigo-600 fill-indigo-600" />
+                            ) : (
+                              <Circle size={16} className="text-gray-300" />
+                            )}
+                          </div>
+                          <div className="min-w-0 flex-1">
+                            <p className={`text-sm font-semibold truncate ${
+                              isCurrent ? 'text-indigo-800' : isDone ? 'text-gray-500' : 'text-gray-700'
+                            }`}>
+                              {idx + 1}. {lesson.title}
+                            </p>
+                          </div>
+                          {isCurrent && (
+                            <span className="shrink-0 text-[10px] font-bold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full uppercase tracking-wide">
+                              Playing
+                            </span>
+                          )}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
 
               {/* Overview Details */}
@@ -233,9 +345,18 @@ const CourseViewer = () => {
 
                 <div className="prose prose-indigo max-w-none">
                   <h3 className="font-heading font-bold text-2xl text-gray-900 mb-4">About this lesson</h3>
-                  <p className="text-gray-600 leading-relaxed mb-8 whitespace-pre-line">
-                    {activeLesson.content || 'No description provided for this lesson.'}
-                  </p>
+                  <div 
+                    className="text-gray-600 leading-relaxed mb-8 lesson-html-content"
+                    dangerouslySetInnerHTML={{ __html: activeLesson.content || 'No description provided for this lesson.' }}
+                  />
+                  <style>{`
+                    .lesson-html-content h2 { font-size: 1.5rem; font-weight: 800; color: #111827; margin-top: 2rem; margin-bottom: 1rem; }
+                    .lesson-html-content h3 { font-size: 1.25rem; font-weight: 800; color: #111827; margin-top: 1.5rem; margin-bottom: 0.75rem; }
+                    .lesson-html-content p { margin-bottom: 1.25rem; }
+                    .lesson-html-content ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+                    .lesson-html-content ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.25rem; }
+                    .lesson-html-content b, .lesson-html-content strong { font-weight: 700; color: #111827; }
+                  `}</style>
 
                   {/* Instructor Bio */}
                   <div className="flex items-center gap-4 mt-12 pt-8 border-t border-gray-100">

@@ -150,12 +150,19 @@ const AdminDashboard = () => {
   }, [fetchPlatformStats, fetchUsers, fetchCourses, fetchNotifications]);
 
   const handleRoleChange = async (userId, newRole) => {
+    if (!window.confirm(`Are you sure you want to change this user's role to ${newRole}?`)) return;
+    
     setUpdatingRole(userId);
     try {
       const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId);
       if (error) throw error;
+      
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
-    } catch (err) { alert('Could not update role: ' + err.message); }
+      alert(`Role updated successfully to ${newRole}!`);
+    } catch (err) { 
+      console.error('Role update error:', err);
+      alert('Could not update role: ' + (err.message || 'Unknown error')); 
+    }
     finally { setUpdatingRole(null); }
   };
 

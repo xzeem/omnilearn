@@ -87,6 +87,9 @@ const AuthWrapper = ({ children }) => {
           }
         }
       } else if (event === 'TOKEN_REFRESHED' && session?.user) {
+        // Only sync on token refresh (silent session renewal).
+        // SIGNED_IN is handled directly in Auth.jsx's handleSignIn,
+        // which sets user+profile then navigates — no race condition.
         await syncProfile(session.user);
       }
     });

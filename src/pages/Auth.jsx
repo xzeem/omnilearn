@@ -118,9 +118,14 @@ const Auth = () => {
           }
           setUser(data.user);
           setProfile(newProfile);
+          navigate('/dashboard', { replace: true });
         } else {
           setUser(data.user);
           setProfile(profileData);
+          // Redirect immediately to the correct dashboard based on role
+          if (profileData.role === 'admin') navigate('/admin', { replace: true });
+          else if (profileData.role === 'instructor') navigate('/tutor', { replace: true });
+          else navigate('/dashboard', { replace: true });
         }
       }
     } catch (err) {

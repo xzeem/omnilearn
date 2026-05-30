@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BookOpen, Users, PlaySquare, Plus, Settings, LogOut, Edit3, Trash2, LayoutDashboard, Menu, X, ArrowLeft, Video, Clock, Search, Award, TrendingUp, Filter, Sparkles, GraduationCap } from 'lucide-react';
+import { BookOpen, Users, PlaySquare, Plus, Settings, LogOut, Edit3, Trash2, LayoutDashboard, Menu, X, ArrowLeft, Video, Clock, Search, Award, TrendingUp, Filter, Sparkles, GraduationCap, Bold, Italic, List, Type, Palette, Link as LinkIcon, Underline } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuthStore } from '../lib/store';
@@ -14,6 +14,71 @@ const BASE_CATEGORIES = [
   "Product Design (UI/UX)",
   "Digital Marketing"
 ];
+
+const RichTextEditor = ({ value, onChange, placeholder }) => {
+  const editorRef = React.useRef(null);
+
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.innerHTML !== value) {
+      editorRef.current.innerHTML = value || '';
+    }
+  }, [value === '']); // Only force sync on clear/reset
+
+  const execCommand = (command, val = null) => {
+    document.execCommand(command, false, val);
+    if (editorRef.current) {
+      onChange(editorRef.current.innerHTML);
+    }
+  };
+
+  const handleInput = (e) => {
+    onChange(e.target.innerHTML);
+  };
+
+  return (
+    <div className="w-full border border-gray-100 rounded-2xl overflow-hidden bg-white shadow-sm focus-within:ring-2 focus-within:ring-indigo-600/20 focus-within:border-indigo-600 transition-all">
+      {/* Toolbar */}
+      <div className="flex flex-wrap items-center gap-1 p-2 bg-gray-50 border-b border-gray-100">
+        <button type="button" onClick={() => execCommand('bold')} className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all" title="Bold"><Bold size={16} /></button>
+        <button type="button" onClick={() => execCommand('italic')} className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all" title="Italic"><Italic size={16} /></button>
+        <button type="button" onClick={() => execCommand('underline')} className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all" title="Underline"><Underline size={16} /></button>
+        <div className="w-px h-6 bg-gray-200 mx-1" />
+        <button type="button" onClick={() => execCommand('insertUnorderedList')} className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all" title="List"><List size={16} /></button>
+        <button type="button" onClick={() => execCommand('formatBlock', 'h2')} className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all font-bold text-xs" title="Heading 1">H1</button>
+        <button type="button" onClick={() => execCommand('formatBlock', 'h3')} className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all font-bold text-xs" title="Heading 2">H2</button>
+        <div className="w-px h-6 bg-gray-200 mx-1" />
+        <div className="relative group">
+          <button type="button" className="p-1.5 hover:bg-white hover:shadow-sm rounded-lg text-gray-600 transition-all" title="Text Color"><Palette size={16} /></button>
+          <div className="absolute top-full left-0 mt-1 hidden group-hover:flex bg-white p-2 border border-gray-100 rounded-xl shadow-xl z-10 gap-1 flex-wrap w-32">
+            {['#000000', '#4f46e5', '#10b981', '#f43f5e', '#f59e0b', '#6366f1'].map(color => (
+              <button key={color} type="button" onClick={() => execCommand('foreColor', color)} className="w-5 h-5 rounded-full border border-gray-100" style={{ backgroundColor: color }} />
+            ))}
+          </div>
+        </div>
+      </div>
+      {/* Editable Area */}
+      <div 
+        ref={editorRef}
+        contentEditable
+        onInput={handleInput}
+        className="min-h-[200px] max-h-[400px] p-4 text-sm text-gray-700 outline-none overflow-y-auto prose prose-sm max-w-none"
+        placeholder={placeholder}
+        dangerouslySetInnerHTML={{ __html: value }}
+      />
+      <style>{`
+        [contenteditable]:empty:before {
+          content: attr(placeholder);
+          color: #9ca3af;
+          pointer-events: none;
+        }
+        .prose ul { list-style-type: disc; padding-left: 1.5rem; }
+        .prose ol { list-style-type: decimal; padding-left: 1.5rem; }
+        .prose h2 { font-size: 1.25rem; font-weight: 700; margin-top: 1rem; margin-bottom: 0.5rem; }
+        .prose h3 { font-size: 1.1rem; font-weight: 700; margin-top: 0.75rem; margin-bottom: 0.4rem; }
+      `}</style>
+    </div>
+  );
+};
 
 const TutorDashboard = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -1427,13 +1492,10 @@ const TutorDashboard = () => {
 
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Lesson Content</label>
-                  <textarea 
+                  <RichTextEditor 
                     value={lessonForm.content} 
-                    onChange={(e) => setLessonForm({ ...lessonForm, content: e.target.value })}
-                    rows={5}
-                    className="w-full px-3.5 py-2.5 sm:px-4 sm:py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:bg-white transition-all font-medium text-gray-900 text-[13px] sm:text-sm leading-relaxed"
-                    placeholder="Write detailed lesson texts or resources here..."
-                    required
+                    onChange={(content) => setLessonForm({ ...lessonForm, content })}
+                    placeholder="Write detailed lesson texts, add colors, and style your content..."
                   />
                 </div>
 
