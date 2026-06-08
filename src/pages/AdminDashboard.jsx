@@ -150,12 +150,26 @@ const AdminDashboard = () => {
   }, [fetchPlatformStats, fetchUsers, fetchCourses, fetchNotifications]);
 
   const handleRoleChange = async (userId, newRole) => {
+    if (userId === profile.id) {
+      alert("You cannot change your own role from the user directory. This is a safety measure to prevent accidental lockout.");
+      return;
+    }
+
     if (!window.confirm(`Are you sure you want to change this user's role to ${newRole}?`)) return;
     
     setUpdatingRole(userId);
     try {
-      const { error } = await supabase.from('profiles').update({ role: newRole }).eq('id', userId);
+      const { data, error } = await supabase
+        .from('profiles')
+        .update({ role: newRole })
+        .eq('id', userId)
+        .select();
+
       if (error) throw error;
+      
+      if (!data || data.length === 0) {
+        throw new Error("No rows were updated. This usually means you don't have permission (Check RLS policies).");
+      }
       
       setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
       alert(`Role updated successfully to ${newRole}!`);
@@ -169,11 +183,26 @@ const AdminDashboard = () => {
   const handleDeleteCourse = async (courseId) => {
     setDeletingCourse(courseId);
     try {
-      const { error } = await supabase.from('courses').delete().eq('id', courseId);
+      // 1. First attempt the delete
+      const { error, count } = await supabase
+        .from('courses')
+        .delete({ count: 'exact' })
+        .eq('id', courseId);
+
       if (error) throw error;
+
+      // 2. If count is 0, it means RLS blocked it or course doesn't exist
+      if (count === 0) {
+        throw new Error("Course not found or deletion blocked by security policies (RLS).");
+      }
+
       setCourses(prev => prev.filter(c => c.id !== courseId));
       setStats(s => ({ ...s, totalCourses: s.totalCourses - 1 }));
-    } catch (err) { alert('Could not delete course: ' + err.message); }
+      alert('Course deleted successfully.');
+    } catch (err) { 
+      console.error('Delete error:', err);
+      alert('Could not delete course: ' + err.message); 
+    }
     finally { setDeletingCourse(null); setConfirmDelete(null); }
   };
 
